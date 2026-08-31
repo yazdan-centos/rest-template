@@ -2,8 +2,8 @@ package org.mapnaom.resttemplate.controller;
 
 import org.mapnaom.resttemplate.entity.Employee;
 import org.mapnaom.resttemplate.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,14 +14,14 @@ import java.util.*;
 @RequestMapping("/api/employees")
 public class EmployeeController {
     private final EmployeeService service;
-
+    @Autowired
     public EmployeeController(EmployeeService service) {
         this.service = service;
     }
 
     @GetMapping
-    public Page<Employee> findAll(Pageable pageable, Specification<Employee> specification) {
-        return service.findAll(pageable, specification);
+    public Page<Employee> findAll(Pageable pageable) {
+        return service.findAll(pageable, null);
     }
 
     @GetMapping("/all")

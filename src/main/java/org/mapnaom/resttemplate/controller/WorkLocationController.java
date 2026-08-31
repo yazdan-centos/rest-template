@@ -3,7 +3,6 @@ package org.mapnaom.resttemplate.controller;
 import org.mapnaom.resttemplate.entity.WorkLocation;
 import org.mapnaom.resttemplate.service.WorkLocationService;
 import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +14,7 @@ import java.util.*;
 public class WorkLocationController {
     private final WorkLocationService service;
     public WorkLocationController(WorkLocationService service) { this.service = service; }
-    @GetMapping public Page<WorkLocation> findAll(Pageable pageable, Specification<WorkLocation> specification) { return service.findAll(pageable, specification); }
+    @GetMapping public Page<WorkLocation> findAll(Pageable pageable) { return service.findAll(pageable, null); }
     @GetMapping("/all") public List<WorkLocation> findAll() { return service.findAll(); }
     @GetMapping("/{id}") public ResponseEntity<WorkLocation> findById(@PathVariable Long id) { return service.findById(id).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build()); }
     @PostMapping public ResponseEntity<WorkLocation> create(@RequestBody WorkLocation entity) { return ResponseEntity.status(HttpStatus.CREATED).body(service.save(entity)); }
