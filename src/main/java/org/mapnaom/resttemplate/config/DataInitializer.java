@@ -1,7 +1,5 @@
 package org.mapnaom.resttemplate.config;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.mapnaom.resttemplate.entity.Employee;
 import org.mapnaom.resttemplate.entity.Post;
 import org.mapnaom.resttemplate.entity.WorkLocation;
@@ -13,6 +11,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -28,12 +28,12 @@ public class DataInitializer implements CommandLineRunner {
     private static final DateTimeFormatter SEED_TIMESTAMP =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.n]");
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper objectMapper;
     private final EmployeeRepository employeeRepository;
     private final PostRepository postRepository;
     private final WorkLocationRepository workLocationRepository;
 
-    public DataInitializer(ObjectMapper objectMapper,
+    public DataInitializer(JsonMapper objectMapper,
                            EmployeeRepository employeeRepository,
                            PostRepository postRepository,
                            WorkLocationRepository workLocationRepository) {
