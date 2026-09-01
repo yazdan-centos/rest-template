@@ -19,7 +19,7 @@ set -euo pipefail
 # CONFIGURATION
 #------------------------------------------------------------------------------
 BACKEND_REPO="https://github.com/yazdan-centos/rest-template.git"
-FRONTEND_REPO="https://github.com/yazdan-centos/rest-template-react.git"
+FRONTEND_REPO="https://github.com/yazdan-centos/rest-template-react-jwt.git"
 
 SERVER_IP="155.117.13.33"
 SSH_PORT="9011"
