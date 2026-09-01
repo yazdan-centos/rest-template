@@ -1,14 +1,17 @@
 package org.mapnaom.resttemplate.config;
 
 import org.mapnaom.resttemplate.entity.Employee;
+import org.mapnaom.resttemplate.entity.AppUser;
 import org.mapnaom.resttemplate.entity.Post;
 import org.mapnaom.resttemplate.entity.WorkLocation;
+import org.mapnaom.resttemplate.repository.AppUserRepository;
 import org.mapnaom.resttemplate.repository.EmployeeRepository;
 import org.mapnaom.resttemplate.repository.PostRepository;
 import org.mapnaom.resttemplate.repository.WorkLocationRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.JsonNode;
@@ -32,20 +35,28 @@ public class DataInitializer implements CommandLineRunner {
     private final EmployeeRepository employeeRepository;
     private final PostRepository postRepository;
     private final WorkLocationRepository workLocationRepository;
+    private final AppUserRepository appUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public DataInitializer(JsonMapper objectMapper,
                            EmployeeRepository employeeRepository,
                            PostRepository postRepository,
-                           WorkLocationRepository workLocationRepository) {
+                           WorkLocationRepository workLocationRepository,
+                           AppUserRepository appUserRepository,
+                           PasswordEncoder passwordEncoder) {
         this.objectMapper = objectMapper;
         this.employeeRepository = employeeRepository;
         this.postRepository = postRepository;
         this.workLocationRepository = workLocationRepository;
+        this.appUserRepository = appUserRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @Transactional
     public void run(String... args) throws IOException {
+        createAdminUser();
+
         // Employees reference both lookup tables, so delete them first.
         employeeRepository.deleteAllInBatch();
         postRepository.deleteAllInBatch();
@@ -54,6 +65,17 @@ public class DataInitializer implements CommandLineRunner {
         Map<Long, Post> posts = loadPosts();
         Map<Long, WorkLocation> locations = loadWorkLocations();
         loadEmployees(posts, locations);
+    }
+
+    private void createAdminUser() {
+        if (appUserRepository.findUserByUsername("admin").isPresent()) {
+            return;
+        }
+        AppUser admin = new AppUser();
+        admin.setUsername("admin");
+        admin.setPassword(passwordEncoder.encode("admin123"));
+        admin.setRole("ADMIN");
+        appUserRepository.save(admin);
     }
 
     private Map<Long, Post> loadPosts() throws IOException {
